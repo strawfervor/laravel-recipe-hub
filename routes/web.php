@@ -29,6 +29,7 @@ Route::resource('cuisines', CuisineController::class)->middleware('auth');
 Route::resource('meal-types', MealTypeController::class)->middleware('auth');
 
 //publiczne trasy przed resource, zeby nie wymagały auth
+Route::get('/recipes/create', [RecipeController::class, 'create'])->middleware('auth')->name('recipes.create');
 Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
 Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
 //reszta resource z except na powyższe
