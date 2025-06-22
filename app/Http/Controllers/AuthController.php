@@ -6,9 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Services\AuthService;
 
 class AuthController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
     public function loginForm()
     {
         return view('auth.login');
@@ -20,15 +28,12 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+        try {
+            $this->authService->login($credentials);
             return redirect()->intended('/');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
         }
-
-        return back()->withErrors([
-            'email' => 'Nieprawidłowy email lub hasło.',
-        ]);
     }
 
     public function registerForm()
@@ -39,24 +44,17 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'max:255'],
-            'email' => ['required', 'email', 'unique:users'],
+            'name'     => ['required', 'max:255'],
+            'email'    => ['required', 'email', 'unique:users'],
             'password' => ['required', 'min:6', 'confirmed'],
         ]);
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
-        Auth::login($user);
+        $this->authService->register($validated);
         return redirect('/');
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        $this->authService->logout();
         return redirect('/');
     }
 }

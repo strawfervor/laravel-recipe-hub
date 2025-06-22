@@ -2,35 +2,30 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
-use App\Models\Favorite;
 use App\Models\Recipe;
-use Illuminate\Support\Facades\Auth;
+use App\Services\FavoriteService;
 
 class FavoriteController extends Controller
 {
+    protected $service;
+
+    public function __construct(FavoriteService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index(Request $request)
     {
         $user = $request->user();
-        // Pobieramy przepisy polubione przez usera
-        $recipes = $user->favorites()->with('recipe.cuisine', 'recipe.mealType')->latest()->get()->pluck('recipe');
-
+        $recipes = $this->service->getUserFavorites($user);
         return view('favorites.index', compact('recipes'));
     }
 
-    public function toggle(Recipe $recipe)
+    public function toggle(Recipe $recipe, Request $request)
     {
-        //przełączanie ulubione/nie ulubione
-        $user = Auth::user();
-        $fav = Favorite::where('user_id', $user->id)->where('recipe_id', $recipe->id)->first();
-
-        if ($fav) {
-            $fav->delete();
-            return back();
-        } else {
-            Favorite::create(['user_id' => $user->id, 'recipe_id' => $recipe->id]);
-            return back();
-        }
+        $user = $request->user();
+        $this->service->toggleFavorite($user, $recipe);
+        return back();
     }
 }

@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Cuisine;
 use Illuminate\Http\Request;
+use App\Services\CuisineService;
 
 class CuisineController extends Controller
 {
+    protected $service;
+
+    public function __construct(CuisineService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index(Request $request)
     {
         $q = $request->query('q');
-        $cuisines = Cuisine::when(
-            $q,
-            fn($query) =>
-            $query->where('name', 'like', "%$q%")
-        )->orderBy('name')->paginate(10)->withQueryString();
-
+        $cuisines = $this->service->getAll($q);
         return view('cuisines.index', compact('cuisines', 'q'));
     }
 
@@ -27,10 +29,10 @@ class CuisineController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'max:64', 'unique:cuisines,name']
         ]);
-        Cuisine::create($request->only('name'));
+        $this->service->create($validated);
         return redirect()->route('cuisines.index')->with('success', 'Dodano kuchnię.');
     }
 
@@ -41,16 +43,16 @@ class CuisineController extends Controller
 
     public function update(Request $request, Cuisine $cuisine)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'max:64', 'unique:cuisines,name,' . $cuisine->id]
         ]);
-        $cuisine->update($request->only('name'));
+        $this->service->update($cuisine, $validated);
         return redirect()->route('cuisines.index')->with('success', 'Zmieniono kuchnię.');
     }
 
     public function destroy(Cuisine $cuisine)
     {
-        $cuisine->delete();
+        $this->service->delete($cuisine);
         return redirect()->route('cuisines.index')->with('success', 'Usunięto kuchnię.');
     }
 }

@@ -2,31 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Review;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Services\ReviewService;
 
 class ReviewController extends Controller
 {
-    //obsługuje tylko store
+    protected $service;
+
+    public function __construct(ReviewService $service)
+    {
+        $this->service = $service;
+    }
+
     public function store(Request $request, Recipe $recipe)
     {
-        $request->validate([
+        $validated = $request->validate([
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
-            'content' => ['required', 'min:3'],
+            'content' => ['required', 'min:6'],
         ]);
-        //ograniczenie do jednej opini na usera
-        $userId = Auth::id();
-        if ($recipe->reviews()->where('user_id', $userId)->exists()) {
-            return back();
+
+        $added = $this->service->addReview($recipe, $validated);
+
+        // Możesz pokazać komunikat
+        if (!$added) {
+            return back()->with('error', 'Już dodałeś opinię do tego przepisu.');
         }
 
-        $recipe->reviews()->create([
-            'user_id' => $userId,
-            'rating' => $request->rating,
-            'content' => $request->content,
-        ]);
-        return back();
+        return back()->with('success', 'Opinia dodana!');
     }
 }

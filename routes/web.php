@@ -20,8 +20,8 @@ Route::get('/register', [AuthController::class, 'registerForm'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 
 
+//potem żeby coś było tylko dla zalogowanych dajemy ->middleware('auth') i bedzie sprawdzać czy user zalogowany
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
-//potem żeby coś było tylko dla zalogowanych dajemy ->middleware('auth') i bedzie sprawdzać czy ktoś zalogowany, czy nie.
 
 //składniki, używamy resource bo standardowe nazwy są użyte w kontrolerze przez wygenerowanie, to nie trzeba pisać wszystkiego osobno.:
 Route::resource('ingredients', IngredientController::class)->middleware('auth');

@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ingredient;
+use App\Services\IngredientService;
 
 class IngredientController extends Controller
 {
+    protected $service;
+
+    public function __construct(IngredientService $service)
+    {
+        $this->service = $service;
+    }
+
     public function index(Request $request)
     {
         $q = $request->query('q');
-        $ingredients = Ingredient::when($q, fn($query) =>
-            $query->where('name', 'like', "%$q%")
-        )->orderBy('name')->paginate(10);
-
+        $ingredients = $this->service->getAll($q);
         return view('ingredients.index', compact('ingredients', 'q'));
     }
 
@@ -24,12 +29,12 @@ class IngredientController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'max:128', 'unique:ingredients,name'],
             'unit' => ['required', 'max:16'],
             'kcal_per_100g' => ['required', 'integer', 'min:0', 'max:2000'],
         ]);
-        Ingredient::create($request->only(['name', 'unit', 'kcal_per_100g']));
+        $this->service->create($validated);
         return redirect()->route('ingredients.index')->with('success', 'Dodano składnik.');
     }
 
@@ -40,18 +45,18 @@ class IngredientController extends Controller
 
     public function update(Request $request, Ingredient $ingredient)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'max:128', 'unique:ingredients,name,'.$ingredient->id],
             'unit' => ['required', 'max:16'],
             'kcal_per_100g' => ['required', 'integer', 'min:0', 'max:2000'],
         ]);
-        $ingredient->update($request->only(['name', 'unit', 'kcal_per_100g']));
+        $this->service->update($ingredient, $validated);
         return redirect()->route('ingredients.index')->with('success', 'Zmieniono składnik.');
     }
 
     public function destroy(Ingredient $ingredient)
     {
-        $ingredient->delete();
+        $this->service->delete($ingredient);
         return redirect()->route('ingredients.index')->with('success', 'Usunięto składnik.');
     }
 }
