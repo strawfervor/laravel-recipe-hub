@@ -18,7 +18,10 @@
         <div class="mb-2 text-gray-500">
             <span>Kuchnia: <strong>{{ $recipe->cuisine->name ?? '-' }}</strong></span> |
             <span>Rodzaj: <strong>{{ $recipe->mealType->name ?? '-' }}</strong></span> |
-            <span>Trudność: <strong>{{ $recipe->difficulty }}</strong></span>
+            <span>Trudność: <strong>{{ $recipe->difficulty }}</strong></span> |
+            @if ($totalKcal)
+            <span>Suma kcal: <strong>{{ $totalKcal }}</strong></span>
+            @endif
         </div>
 
 
@@ -27,17 +30,20 @@
         </div>
 
         <!-- dodanie rpzpeisu do ulubionych -->
+        @auth
+            
         <form method="POST" action="{{ route('recipes.favorite', $recipe) }}" class="inline-block">
             @csrf
             <button type="submit" class="btn btn-sm {{ $isFav ? 'btn-error' : 'btn-secondary' }}"
-                title="{{ $isFav ? 'Usuń z ulubionych' : 'Dodaj do ulubionych' }}">
-                @if ($isFav)
-                    Lubisz ten przepis
-                @else
-                    Lubię ten przepis
-                @endif
-            </button>
+            title="{{ $isFav ? 'Usuń z ulubionych' : 'Dodaj do ulubionych' }}">
+            @if ($isFav)
+            Lubisz ten przepis
+            @else
+            Lubię ten przepis
+            @endif
+        </button>
         </form>
+        @endauth
 
         <h2 class="text-xl font-semibold mb-2 mt-6">Opis:</h2>
         <p class="mb-4 text-lg">{{ $recipe->short_description }}</p>
@@ -118,12 +124,12 @@
         @empty
             <p class="text-gray-500">Brak recenzji.</p>
         @endforelse
-
-        <div class="mt-6 flex gap-2">
-            <a href="{{ route('recipes.edit', $recipe) }}" class="btn btn-outline btn-sm">Edytuj</a>
-            <a href="{{ route('recipes.index') }}" class="btn btn-sm">Wróć</a>
-            <!-- usuwanie przpeisu -->
-            @auth
+        @auth
+            <h1 class="text-xl font-semibold mb-4 mt-8">Zarządzanie przepisem: </h1>
+            <div class="mt-6 flex gap-2">
+                <a href="{{ route('recipes.edit', $recipe) }}" class="btn btn-outline btn-sm">Edytuj</a>
+                <a href="{{ route('recipes.index') }}" class="btn btn-sm">Wróć</a>
+                <!-- usuwanie przpeisu -->
                 @if (auth()->id() === $recipe->user_id)
                     <form method="POST" action="{{ route('recipes.destroy', $recipe) }}" class="inline-block"
                         onsubmit="return confirm('Usunąć ten przepis?');">

@@ -27,7 +27,14 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 Route::resource('ingredients', IngredientController::class)->middleware('auth');
 Route::resource('cuisines', CuisineController::class)->middleware('auth');
 Route::resource('meal-types', MealTypeController::class)->middleware('auth');
-Route::resource('recipes', RecipeController::class)->middleware('auth');
+
+//publiczne trasy przed resource, zeby nie wymagały auth
+Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
+Route::get('/recipes/{recipe}', [RecipeController::class, 'show'])->name('recipes.show');
+//reszta resource z except na powyższe
+Route::resource('recipes', RecipeController::class)
+    ->except(['index', 'show'])
+    ->middleware('auth');
 
 //ocenianie i recenze tylko dowanie:
 Route::post('/recipes/{recipe}/review', [ReviewController::class, 'store'])->middleware('auth')->name('reviews.store');

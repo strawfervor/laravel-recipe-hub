@@ -59,4 +59,16 @@ class RecipeService
     {
         return $recipe->reviews()->avg('rating');
     }
+
+    public function getTotalKcal(Recipe $recipe)
+{
+    $total = 0;
+    foreach ($recipe->ingredients as $ingredient) {
+        //amount = ilość w gramach/ml
+        $amount = $ingredient->pivot->amount;
+        $kcal_per_100g = $ingredient->kcal_per_100g ?: 0;
+        $total += ($amount / 100) * $kcal_per_100g;
+    }
+    return round($total, 2);
+}
 }

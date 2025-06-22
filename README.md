@@ -1,6 +1,6 @@
 # Laravel Recipes Hub
 
-A coursework project for the "Advanced Web Services Programming" course at WSB-NLU.  
+A coursework project for the "Advanced Web Services Programming".  
 This web application allows users to create, manage, and share cooking recipes with a modern, user-friendly interface.
 
 ## Features
@@ -21,3 +21,10 @@ This web application allows users to create, manage, and share cooking recipes w
 - MySQL
 - TailwindCSS + daisyUI
 - PHP 8.1+
+
+## Hot to run it?
+
+- clone or download this repository,
+- install dependencies: composer install,
+- first do migration: php artisan migrate,
+- then, run it, for ex.: php artisan serve,

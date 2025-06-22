@@ -97,6 +97,7 @@ class RecipeController extends Controller
     {
         $recipe = $this->service->getWithRelations($recipe);
         $avgRating = $this->service->getAvgRating($recipe);
-        return view('recipes.show', compact('recipe', 'avgRating'));
+        $totalKcal = $this->service->getTotalKcal($recipe);
+        return view('recipes.show', compact('recipe', 'avgRating', 'totalKcal'));
     }
 }
