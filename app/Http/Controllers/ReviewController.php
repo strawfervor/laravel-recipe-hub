@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 use App\Services\ReviewService;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
@@ -30,5 +31,25 @@ class ReviewController extends Controller
         }
 
         return back()->with('success', 'Opinia dodana!');
+    }
+
+    public function index(Request $request)
+    {
+        $search = $request->query('q');
+        $userId = Auth::id();
+        $reviews = $this->service->getUserReviews($userId, $search);
+
+        return view('reviews.index', compact('reviews', 'search'));
+    }
+
+    public function destroy($id)
+    {
+        $userId = Auth::id();
+        $deleted = $this->service->deleteUserReview($id, $userId);
+
+        if ($deleted) {
+            return back()->with('success', 'Usunięto recenzję.');
+        }
+        return back()->with('error', 'Nie można usunąć tej recenzji.');
     }
 }

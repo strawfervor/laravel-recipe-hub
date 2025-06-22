@@ -22,4 +22,28 @@ class ReviewService
         ]);
         return true;
     }
+
+    public function getUserReviews($userId, $search = null)
+    {
+        $query = \App\Models\Review::with(['recipe.cuisine', 'recipe.mealType'])
+            ->where('user_id', $userId)
+            ->orderByDesc('created_at');
+
+        if ($search) {
+            $query->where('content', 'like', "%$search%");
+        }
+
+        return $query->paginate(10)->withQueryString();
+    }
+
+    public function deleteUserReview($reviewId, $userId)
+    {
+        $review = \App\Models\Review::where('id', $reviewId)->where('user_id', $userId)->first();
+
+        if ($review) {
+            $review->delete();
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,5 +1,5 @@
 <!-- W kontrolerze w take się definiu ile ma wyświetlać najnowszych przepisów -->
-<div class="flex flex-wrap justify-between mt-4 mb-4 gap-4">
+<div class="flex flex-wrap justify-start mt-4 mb-4 gap-4">
     @foreach ($recipes as $recipe)
         <div class="card bg-base-100 w-80 shadow-sm">
             <figure>

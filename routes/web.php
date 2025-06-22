@@ -31,6 +31,8 @@ Route::resource('recipes', RecipeController::class)->middleware('auth');
 
 //ocenianie i recenze tylko dowanie:
 Route::post('/recipes/{recipe}/review', [ReviewController::class, 'store'])->middleware('auth')->name('reviews.store');
+Route::get('/reviews', [ReviewController::class, 'index'])->middleware('auth')->name('reviews.index');
+Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->middleware('auth')->name('reviews.destroy');
 
 //lubienie
 Route::post('recipes/{recipe}/favorite', [FavoriteController::class, 'toggle'])->middleware('auth')->name('recipes.favorite');

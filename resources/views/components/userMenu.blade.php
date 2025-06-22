@@ -25,6 +25,9 @@
             <li>
                 <a href="{{ route('favorites.index') }}" >Ulubione przepisy</a>
             </li>
+            <li>
+                <a href="{{ route('reviews.index') }}" >Moje opinie</a>
+            </li>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <li><button type="submit" >Wyloguj</button></li>
