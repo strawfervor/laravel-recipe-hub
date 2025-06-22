@@ -27,7 +27,7 @@
                         <select name="ingredients[0][id]" class="select select-bordered" required>
                             <option value="">składnik</option>
                             @foreach ($ingredients as $ingredient)
-                                <option value="{{ $ingredient->id }}">{{ $ingredient->name }}
+                                <option value="{{ $ingredient->id }}">{{ $ingredient->name }} ({{ $ingredient->unit }})
                                 </option>
                             @endforeach
                         </select>
@@ -85,7 +85,7 @@
             const html = `
             <div class="flex gap-2 mb-2">
                 <select name="ingredients[${ingredientIndex}][id]" class="select select-bordered" required>
-                    <option value="">-- wybierz --</option>
+                    <option value="">składnik</option>
                     @foreach ($ingredients as $ingredient)
                         <option value="{{ $ingredient->id }}">{{ $ingredient->name }} ({{ $ingredient->unit }})</option>
                     @endforeach

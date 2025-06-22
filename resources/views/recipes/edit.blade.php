@@ -33,7 +33,7 @@
                                 @foreach ($ingredients as $ingredient)
                                     <option value="{{ $ingredient->id }}"
                                         @selected(old("ingredients.$i.id", $ing->id) == $ingredient->id)>
-                                        {{ $ingredient->name }}
+                                        {{ $ingredient->name }} ({{ $ingredient->unit }})
                                     </option>
                                 @endforeach
                             </select>
@@ -55,7 +55,7 @@
                                     @foreach ($ingredients as $ingredient)
                                         <option value="{{ $ingredient->id }}"
                                             @selected(old("ingredients.$j.id") == $ingredient->id)>
-                                            {{ $ingredient->name }}
+                                            {{ $ingredient->name }} ({{ $ingredient->unit }})
                                         </option>
                                     @endforeach
                                 </select>
@@ -117,7 +117,7 @@
                 <select name="ingredients[\${ingredientIndex}][id]" class="select select-bordered" required>
                     <option value="">składnik</option>
                     @foreach ($ingredients as $ingredient)
-                        <option value="{{ $ingredient->id }}">{{ $ingredient->name }}</option>
+                        <option value="{{ $ingredient->id }}">{{ $ingredient->name }} ({{ $ingredient->unit }})</option>
                     @endforeach
                 </select>
                 <input type="number" min="1" name="ingredients[\${ingredientIndex}][amount]" class="input input-bordered" placeholder="ilość" required>
