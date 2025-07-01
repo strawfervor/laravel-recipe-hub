@@ -1,7 +1,7 @@
 <x-layout>
     <div class="max-w-sm mx-auto mt-10 bg-base-200 p-8 rounded-xl shadow">
         <h2 class="text-2xl font-bold mb-4 text-center">Logowanie</h2>
-        @if ($errors->any())<!--pokazywanie błędów-->
+        @if ($errors->any())
             <div class="alert alert-error mb-4">
                 <ul>
                     @foreach ($errors->all() as $e)

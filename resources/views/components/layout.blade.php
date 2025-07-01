@@ -40,12 +40,20 @@
                     </label>
                     <ul tabindex="0"
                         class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                            <li><a asp-controller="Przepisy" asp-action="Index">Przepisy</a></li>
-                            <li><a asp-controller="Przepisy" asp-action="Create">Dodaj przepis</a></li>
-                            <li class="border-t mt-2 pt-2"><a>Mój profil</a></li>
-                            <li><a asp-controller="Ulubione" asp-action="Index">Ulubione przepisy</a></li>
-                            <li><a asp-controller="Recenzje" asp-action="Index">Recenzje</a></li>
-                            <li><a>Wyloguj</a></li>
+                        <!-- <li><a asp-controller="Przepisy" asp-action="Index">Przepisy</a></li>
+                        <li><a asp-controller="Przepisy" asp-action="Create">Dodaj przepis</a></li>
+                        <li class="border-t mt-2 pt-2"><a>Mój profil</a></li>
+                        <li><a asp-controller="Ulubione" asp-action="Index">Ulubione przepisy</a></li>
+                        <li><a asp-controller="Recenzje" asp-action="Index">Recenzje</a></li>
+                        <li><a>Wyloguj</a></li> -->
+                        <li><a href="{{ route('recipes.index') }}">Przepisy</a></li>
+                        <li><a href="{{ route('recipes.create') }}">Dodaj przepis</a></li>
+                        <li><a href="{{ route('favorites.index') }}">Ulubione przepisy</a></li>
+                        <li><a href="{{ route('reviews.index') }}">Moje opinie</a></li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <li><button type="submit">Wyloguj</button></li>
+                        </form>
                     </ul>
                 </div>
             </div>
@@ -59,7 +67,7 @@
     <footer class="footer footer-center bg-base-300 text-base-content p-4">
         <aside>
 
-            <!-- ewenetuialnie wyświetlić: <p>Stopka.Tresc</p> -->
+            <!-- ewenetuialnie wyświetlić z view bag: <p>Stopka.Tresc</p> -->
 
             <p>©2025 - Przepisy</p>
 

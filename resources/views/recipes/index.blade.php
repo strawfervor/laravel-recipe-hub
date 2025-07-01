@@ -57,7 +57,6 @@
         @endforelse
     </div>
 
-    <!-- Paginacja -->
     <div class="w-full mt-10 pt-6 flex justify-center">
         {{ $recipes->appends(['q' => $q, 'cuisine_id' => $selectedCuisine, 'meal_type_id' => $selectedMealType])->links() }}
     </div>
